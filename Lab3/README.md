@@ -24,3 +24,7 @@
 1. The main difference between these two is the number of system calls in your application.
 
 2. The `read() / write()` level APIs do not do buffering - so if you read() 1 byte at a time you will have a huge performance penalty compared to doing the same thing with `fread() / fwrite()`. `fread() / write()` will pull a block and dole it out as you ask for it. `read()/ write()` will drop to the kernel for each call.
+
+### Useful Meanings-Library
+
+- `offset` : the number of address locations added to a base address in order to get to a specific absolute address.

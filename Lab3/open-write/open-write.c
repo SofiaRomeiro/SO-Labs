@@ -36,7 +36,7 @@ int main(int argc, char *argv[]) {
     *
    */ 
 
-   /*
+  
    int fd = open("test.txt", O_CREAT | O_TRUNC | O_WRONLY , S_IRUSR | S_IWUSR); 
    if (fd < 0){
       printf("open error: %s\n", strerror(errno));
@@ -44,7 +44,7 @@ int main(int argc, char *argv[]) {
    }
 
    char buffer[] = "Hello World!\n";
-   */
+
 
    /* write a string to the file */
 
@@ -61,16 +61,16 @@ int main(int argc, char *argv[]) {
     *
    */ 
 
-   /*
-   int bytes_written = write(fd, buffer, strlen(buffer));
+ 
+   int bytes_written = write(1, buffer, strlen(buffer));
    if (bytes_written < 0){
       printf("write error: %s\n", strerror(errno));
       return -1;
    }
-   */
+
 
    /* close the file */
-   //close(fd);
+   close(fd);
 
    /* USING STDIO FUNCTIONS */
 
@@ -80,6 +80,7 @@ int main(int argc, char *argv[]) {
     *
    */
 
+   /*
    FILE *fp = NULL;
    fp = fopen("test.txt", "w");
 
@@ -88,6 +89,7 @@ int main(int argc, char *argv[]) {
    }
 
    char buffer[] = "Hello World!\n";
+   */
 
    /*
     * size_t fwrite(const void *ptr, size_t size, size_t nmemb, FILE *stream)
@@ -99,6 +101,7 @@ int main(int argc, char *argv[]) {
     *
    */
 
+   /*
    int bytes_written = fwrite(buffer, sizeof(char), strlen(buffer), fp);
 
    if (bytes_written < 0) {
@@ -107,6 +110,7 @@ int main(int argc, char *argv[]) {
    }
 
    fclose(fp);
+   */
 
    return 0;
 }

@@ -6,6 +6,7 @@
  */
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <errno.h>
 #include <unistd.h>
 #include <sys/types.h>
@@ -65,11 +66,13 @@ int main(int argc, char *argv[])
    /* close the file */
    //close(fd);
 
+   /*
    FILE *fp = NULL;
    fp = fopen("test.txt", "r");
 
    char buffer[128];
    memset(buffer, 0, sizeof(buffer));
+   */
 
    /*
     * size_t fread(void *ptr, size_t size, size_t nmemb, FILE *stream)
@@ -81,7 +84,8 @@ int main(int argc, char *argv[])
     *
    */
 
-   int bytes_read = fread(&buffer, sizeof(char), sizeof(buffer) /* = 128 */, fp);
+   /*
+   int bytes_read = fread(&buffer, sizeof(char), sizeof(buffer), fp);
    if (bytes_read < 0){
       printf("read error: %s\n", strerror(errno));
       return -1;
@@ -91,5 +95,90 @@ int main(int argc, char *argv[])
 
    fclose(fp);
 
-   return 0;
+   */
+
+	char* buffer = NULL;
+	size_t result;
+	long lSize = 0;
+	FILE *fp = NULL;
+	FILE *wfp = NULL;
+
+	// open the file
+	fp = fopen("test.txt","r");
+
+	// check if open was successfull
+	if (fp == NULL) {
+		printf("File error\n");
+		exit (1);
+	}
+
+	/*
+    * int fseek(FILE *stream, long int offset, int whence)
+    *
+    * https://www.geeksforgeeks.org/fseek-in-c-with-example/
+	*
+	* Sets the file position (fp) of the stream to the given offset.
+    * 
+    * stream   − Pointer to a FILE object that identifies the stream.
+    * offset   − Number of bytes to offset from whence.
+    * whence   − Position from where offset is added. It is specified by one of the following constants:
+    *				--> SEEK_SET : Beginning of file
+    *				--> SEEK_CUR : Current position of the file pointer
+    *				--> SEEK_END : End of file
+	*
+   	*/
+
+	fseek(fp, 0, SEEK_END); //starting at the beginning
+
+	/*
+    * long int ftell(FILE *stream)
+	*
+	* Returns the current file position (fp) of the given stream.
+    * 
+    * stream   − Pointer to a FILE object that identifies the stream.
+	*
+   	*/
+
+	lSize = ftell (fp);
+
+	printf("lSize: %ld\n", lSize);
+
+	/*
+    * void rewind(FILE *stream)
+	*
+	* Sets the file position to the beginning of the file of the given stream.
+    * 
+    * stream   − Pointer to a FILE object that identifies the stream.
+	*
+   	*/
+
+	rewind(fp);
+
+	buffer = (char *) malloc(lSize);
+
+	result = fread(buffer, sizeof(char), lSize, fp);
+
+	if (result != lSize) {
+		printf ("Reading error 2"); 
+		return 1;
+	}
+
+	wfp = fopen("test-out.txt", "w");
+
+	if (wfp == NULL) {
+		printf("Error opening wfp\n");
+		return 1;
+	}
+
+	size_t write_size = fwrite(buffer, sizeof(char), strlen(buffer), wfp);
+
+	if (write_size < 0) {
+		printf("Error writing the file\n");
+		return 1;
+	}
+
+	fclose(wfp);
+	fclose (fp);
+
+	return 0;
 }
