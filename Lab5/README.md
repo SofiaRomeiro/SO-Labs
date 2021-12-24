@@ -28,7 +28,7 @@ In this program we have:
 For both functions, compiling using `gcc -pthread -lpthread -o <name> <file-name>.c`, giving `10` as input the output was:
     1. `./rwlock 10  0,00s user 0,00s system 0% cpu 13,073 total` for rwlock version with 4 threads \
     `./mutex 10  0,00s user 0,00s system 0% cpu 22,279 total` for mutex version with 4 threads \
-Which means that, in this case, `rwlock` was 1.7 times faster than `mutex`
+    2. **Conclusion**: Which means that, in this case, `rwlock` was 1.7 times faster than `mutex`
 - CASE 2: Using different number of threads calling `consultar_conta()`
 For both functions, compiling using `gcc -pthread -lpthread -o <name> <file-name>.c`, giving `10000` as input the output was:
     1. `./rwlock 10000  0,00s user 0,00s system 162% cpu 0,003 total` for rwlock version with 4 threads \
@@ -37,5 +37,5 @@ For both functions, compiling using `gcc -pthread -lpthread -o <name> <file-name
     `./mutex 10000  0,01s user 0,00s system 162% cpu 0,004 total` for mutex version with 8 threads \
     3. `./rwlock 10000  0,01s user 0,00s system 178% cpu 0,004 total` for rwlock version with 16 threads \
     `./mutex 10000  0,00s user 0,01s system 179% cpu 0,005 total` for mutex version with 16 threads \
-Which means that, in this case, by increasing the amount of threads, the results obtained with `rwlock` become better than the ones obtained with `mutex`
+4. **Conclusion** : Which means that, in this case, by increasing the amount of threads, the results obtained with `rwlock` become better than the ones obtained with `mutex`
 
