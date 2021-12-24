@@ -36,6 +36,6 @@ For both functions, compiling using `gcc -pthread -lpthread -o <name> <file-name
     2. `./rwlock 10000  0,01s user 0,00s system 170% cpu 0,004 total` for rwlock version with 8 threads
     `./mutex 10000  0,01s user 0,00s system 162% cpu 0,004 total` for mutex version with 8 threads \
     3. `./rwlock 10000  0,01s user 0,00s system 178% cpu 0,004 total` for rwlock version with 16 threads \
-    `./mutex 10000  0,00s user 0,01s system 179% cpu 0,005 total` for mutex version with 16 threads \
-4. **Conclusion** : Which means that, in this case, by increasing the amount of threads, the results obtained with `rwlock` become better than the ones obtained with `mutex`
+    `./mutex 10000  0,00s user 0,01s system 179% cpu 0,005 total` for mutex version with 16 threads
+    4. **Conclusion** : Which means that, in this case, by increasing the amount of threads, the results obtained with `rwlock` become better than the ones obtained with `mutex`
 
