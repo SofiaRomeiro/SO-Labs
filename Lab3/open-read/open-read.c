@@ -172,6 +172,8 @@ int main(int argc, char *argv[])
 
 	size_t write_size = fwrite(buffer, sizeof(char), strlen(buffer), wfp);
 
+	printf("[+] write_size = %ld\n strlen(buffer = %ld\n", write_size, strlen(buffer));
+
 	if (write_size < 0) {
 		printf("Error writing the file\n");
 		return 1;
