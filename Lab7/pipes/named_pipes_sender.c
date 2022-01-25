@@ -17,8 +17,8 @@
 
 // helper function to send messages
 // retries to send whatever was not sent in the begginning
-void send_msg(int tx, char const *str, char *pipe_name) {
-    size_t len = strlen(str);
+void send_msg(int tx, char const *str, size_t len) {
+    //size_t len = strlen(str);
     size_t written = 0;
 
     ssize_t ret;
@@ -31,26 +31,7 @@ void send_msg(int tx, char const *str, char *pipe_name) {
         }
         written += ret;
     }
-
-    size_t written_pipename = 0;
-    len += (strlen(pipe_name) + 1);
-
-    printf("[ + ] Ack name in sender : %s\n", pipe_name);
-
-    while (written < len) {
-        ret = write(tx, pipe_name + written_pipename, len - written);
-        if (ret < 0) {
-            fprintf(stderr, "[ERR]: write failed: %s\n", strerror(errno));
-            exit(EXIT_FAILURE);
-        }
-        written += ret;
-        written_pipename += ret;
-    }
     
-    if (ret < 0) {
-        fprintf(stderr, "[ERR]: write failed: %s\n", strerror(errno));
-        exit(EXIT_FAILURE);
-    }
 }
 
 int wait_ack(int rx, int msg) {
@@ -69,6 +50,18 @@ int wait_ack(int rx, int msg) {
     printf ("Ack signal %d : %s\n", msg, buffer);
 
     return memcmp(ACK_MSG, buffer, sizeof(ACK_MSG));
+}
+
+char *alloc_msg(size_t len, char const *msg, char const *ack_pipe) {
+    char *buffer = (char *)malloc((sizeof(char)*len) + 1);    
+    memset(buffer, '\0', sizeof(buffer));
+    memcpy(buffer, msg, strlen(msg)/sizeof(char));
+    memcpy(buffer + strlen(msg)/sizeof(char), ack_pipe, strlen(ack_pipe)/sizeof(char));
+    return buffer;
+}
+
+void destroy_msg(char *buffer) {
+    free(buffer);
 }
 
 int main(int argc, char **argv) {
@@ -121,9 +114,15 @@ int main(int argc, char **argv) {
         exit(EXIT_FAILURE);
     }
 
+    char *message;
+
     // The parent is likes classic rock:
     // https://www.youtube.com/watch?v=lrpXArn3hII
-    send_msg(tx, "Tell me now\n", ack_pipe);
+    char *song = "Tell me now\n";
+    size_t len = strlen(song) + strlen(ack_pipe);
+    message = alloc_msg(len, song, ack_pipe);
+
+    send_msg(tx, message, len);
 
     int rx = open(ack_pipe, O_RDONLY);
     if (rx == -1) {
@@ -134,23 +133,37 @@ int main(int argc, char **argv) {
     if (wait_ack(rx, 0) != 0) {
         printf("[ERR] Ack 0 failed\n");
         exit(EXIT_FAILURE);
-    }    
+    }   
+
+    destroy_msg(message);
 
     sleep(3);
 
-    send_msg(tx, "Is he good to you?\n", ack_pipe);
+    song = "Is he good to you?\n";
+    len = strlen(song) + strlen(ack_pipe);
+    message = alloc_msg(len, song, ack_pipe);
+
+    send_msg(tx, message, len);
     if (wait_ack(rx, 1) != 0) {
         printf("[ERR] Ack 1 failed\n");
         exit(EXIT_FAILURE);
     }
 
+    destroy_msg(message);
+
     sleep(3);
 
-    send_msg(tx, "Can you make you the meals that I do?\n", ack_pipe);
+    song = "Can you make you the meals that I do?\n";
+    len = strlen(song) + strlen(ack_pipe);
+    message = alloc_msg(len, song, ack_pipe);
+
+    send_msg(tx, message, len);
     if (wait_ack(rx, 2) != 0) {
         printf("[ERR] Ack 2 failed\n");
         exit(EXIT_FAILURE);
     }
+
+    destroy_msg(message);
 
     sleep(3);
 

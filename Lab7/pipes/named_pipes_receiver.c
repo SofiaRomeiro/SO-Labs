@@ -46,7 +46,10 @@ int main() {
     while (true) {
         char buffer[BUFFER_SIZE];
         memset(buffer, '\0', sizeof(buffer));
-        ssize_t ret = read(rx, buffer, BUFFER_SIZE - 1);
+        ssize_t ret;
+
+        ret = read(rx, buffer, BUFFER_SIZE - 1); 
+
         if (ret == 0) {
             // ret == 0 signals EOF
             fprintf(stderr, "[INFO]: pipe closed (%s)\n", FIFO_PATHNAME);
@@ -55,19 +58,6 @@ int main() {
             // ret == -1 signals error
             fprintf(stderr, "[ERR]: read failed: %s\n", strerror(errno));
             exit(EXIT_FAILURE);
-        }
-
-        while(buffer[ret-1] != '\0') {
-            ret = read(rx, buffer, BUFFER_SIZE - 1);
-            if (ret == 0) {
-                // ret == 0 signals EOF
-                fprintf(stderr, "[INFO]: pipe closed (%s)\n", FIFO_PATHNAME);
-                return 0;
-            } else if (ret == -1) {
-                // ret == -1 signals error
-                fprintf(stderr, "[ERR]: read failed: %s\n", strerror(errno));
-                exit(EXIT_FAILURE);
-            }
         }
 
         fprintf(stderr, "[INFO]: received %zd B\n", ret);
